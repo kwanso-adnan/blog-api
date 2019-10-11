@@ -1,0 +1,104 @@
+{
+  //activity bas settings
+  "keyboard.dispatch": "keyCode",
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "name": "[ITALICS] REMOVED",
+        "scope": [
+          "modifier",
+          "this",
+          "comment",
+          "storage.modifier.js",
+          "entity.other.attribute-name.js",
+          "entity.other.attribute-name.html",
+          "punctuation.definition.comment",
+          "text.html.basic entity.other",
+          "entity.other.attribute-name.tsx",
+          "entity.other.attribute-name.jsx",
+          "markup.quote.markdown meta.paragraph.markdown",
+          "markup.italic.markdown",
+          "text.jade entity.other.attribute-name.tag",
+          "keyword.control.from.js",
+          "entity.other.attribute-name.tag.pug"
+        ],
+        "settings": {
+          "fontStyle": ""
+        }
+      }
+    ]
+  },
+  "workbench.colorTheme": "Shades of Purple",
+  "editor.fontFamily": "Fira Code,Operator Mono, Fira Code, Monaco, 'Courier New', monospace",
+  "terminal.integrated.fontFamily": "'Fira Code', 'Inconsolata for Powerline', monospace",
+  "editor.fontSize": 17,
+  "editor.lineHeight": 24.65,
+  "editor.letterSpacing": 0.5,
+  "editor.fontWeight": "400",
+  "files.insertFinalNewline": false,
+  "editor.quickSuggestionsDelay": 0,
+  "editor.fontLigatures": true,
+  "editor.cursorStyle": "line",
+  "editor.cursorWidth": 5,
+  "editor.cursorBlinking": "solid",
+  "editor.renderWhitespace": "all",
+  "editor.snippetSuggestions": "top",
+  "workbench.startupEditor": "newUntitledFile",
+  "editor.glyphMargin": true,
+  "workbench.editor.enablePreview": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "explorer.openEditors.visible": 2,
+  // Formatting Optional.
+  "editor.formatOnSave": true,
+  //eslint and tslint
+  "prettier.printWidth": 100,
+  "eslint.run": "onType",
+  "eslint.autoFixOnSave": true,
+  "eslint.enable": true,
+  // SOP's highlight matching tag setting.
+  "highlight-matching-tag.styles": {
+    "opening": {
+      "full": {
+        "custom": {
+          "backgroundColor": "rgba(165, 153, 233, 0.1)"
+        }
+      },
+      "left": {
+        "custom": {
+          "borderWidth": "0"
+        }
+      },
+      "right": {
+        "custom": {
+          "borderWidth": "0"
+        }
+      }
+    }
+  },
+  //Markdown settings
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": true,
+    "editor.formatOnSave": false
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  // SOP's Import Cost Extension Settings.
+  "importCost.largePackageColor": "#EC3A37F5",
+  "importCost.mediumPackageColor": "#B362FF",
+  "importCost.smallPackageColor": "#B362FF",
+  "workbench.panel.defaultLocation": "right",
+  "workbench.settings.editor": "json",
+  "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "editor.minimap.enabled": false,
+  "window.zoomLevel": 0,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.colorCustomizations": {},
+  "workbench.iconTheme": "vscode-icons"
+}
