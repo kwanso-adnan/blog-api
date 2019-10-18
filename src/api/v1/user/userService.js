@@ -5,15 +5,25 @@ export default {
   create,
   getById,
   update,
-  replace
+  replace,
+  getByEmail
 };
 
-function create({ firstName = '', lastName = '', email = '', password = '' }) {
+async function create({
+  firstName = '',
+  lastName = '',
+  email = '',
+  password = ''
+}) {
   return User.create({ firstName, lastName, email, password });
 }
 
 function getById(id) {
   return User.findByPk(id);
+}
+
+function getByEmail(email = null) {
+  return User.findOne({ where: { email } });
 }
 
 function update(id, updates) {
@@ -24,7 +34,7 @@ function update(id, updates) {
       updatedCols[col] = updates[col];
     }
   });
-  return User.update(updatedCols, { where: id });
+  return User.update(updatedCols, { where: { id } });
 }
 
 function replace(id, user) {

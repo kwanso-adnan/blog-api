@@ -1,5 +1,5 @@
-import { Post } from '../../../db/models';
-
+import { Op } from 'sequelize';
+import { Post, Comment } from '../../../db/models';
 /* eslint-disable no-use-before-define */
 export default {
   create,
@@ -21,9 +21,14 @@ function getAll({ filter = '', page = 1, userId = null, order = 'ASC' }) {
   const options = {
     where: {
       title: {
-        iLike: `%${filter}%`
+        [Op.iLike]: `%${filter}%`
       }
     },
+    include: [
+      {
+        model: Comment
+      }
+    ],
     orderBy: ['title', order],
     limit,
     offset
@@ -46,9 +51,9 @@ function update(id, { title = null, body = null }) {
   const updatedColumns = {};
   if (title) updatedColumns.title = title;
   if (body) updatedColumns.body = body;
-  return Post.update(updatedColumns, { where: id });
+  return Post.update(updatedColumns, { where: { id } });
 }
 
 function replace(id, { title = null, body = null }) {
-  return Post.update({ title, body }, { where: id });
+  return Post.update({ title, body }, { where: { id } });
 }

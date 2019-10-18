@@ -1,5 +1,4 @@
 /* eslint-disable no-use-before-define */
-
 export default function createController(service) {
   return {
     createOne: createOne(service),
@@ -15,7 +14,7 @@ function createOne(service) {
   return async function createRecord(req, resp, next) {
     try {
       const data = await service.create(req.body);
-      resp.json(201).json(data);
+      resp.status(201).json(data);
     } catch (error) {
       return next(error);
     }
@@ -26,8 +25,11 @@ function deleteOne(service) {
   return async function deleteRecord(req, resp, next) {
     const { id } = req.params;
     try {
-      const result = await service.remove(id);
-      resp.status(200).json(result);
+      const countDeleted = await service.remove(id);
+      if (countDeleted === 0) {
+        return resp.status(404).json({ error: 'Resource not found' });
+      }
+      resp.status(200).json({ message: `${countDeleted} record delted.` });
     } catch (error) {
       return next(error);
     }
@@ -65,7 +67,7 @@ function updateOne(service) {
     const { id } = req.params;
     try {
       const updatedRecord = await service.update(id, req.body);
-      resp.status(201).json(updatedRecord);
+      resp.status(201).json({ message: `${updatedRecord} record updated.` });
     } catch (error) {
       return next(error);
     }

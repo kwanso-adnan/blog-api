@@ -1,6 +1,6 @@
-export default function addUserId(error, req, resp, next) {
+export default function addUserId(req, resp, next) {
   if (req.user) {
-    req.body.userId = req.user.userId;
+    req.body.userId = req.user.id;
   }
   next();
 }
