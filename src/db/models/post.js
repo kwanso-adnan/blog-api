@@ -4,14 +4,24 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       body: DataTypes.STRING,
-      userId: DataTypes.INTEGER
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      }
     },
     {}
   );
   Post.associate = function(models) {
-    // associations can be defined here
-    Post.belongsTo(models.User);
-    Post.hasMany(models.Comment);
+    Post.belongsTo(models.User, {
+      foreignKeyConstraint: true,
+      foreignKey: 'userId'
+    });
+    Post.hasMany(models.Comment, {
+      foreignKeyConstraint: true,
+      foreignKey: 'postId'
+    });
   };
   return Post;
 };
+
+// Change naming conventions by writing migrations

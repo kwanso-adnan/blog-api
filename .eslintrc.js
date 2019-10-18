@@ -17,6 +17,9 @@ module.exports = {
     'import/newline-after-import': ['error', { count: 1 }],
     quotes: ['error', 'single'],
     'import/no-dynamic-require': 0,
-    'no-unused-vars': 'warn'
+    'no-unused-vars': 'warn',
+    'consistent-return': 'warn',
+    'consistent-return': 0,
+    'no-use-before-define': 1
   }
 };

@@ -3,12 +3,11 @@ import { json, urlencoded } from 'body-parser';
 import morgan from 'morgan';
 import api from './api';
 
-
 const PORT = process.env.PORT || 4000;
 const app = express();
 
 // Middleware
-app.use(json);
+app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
