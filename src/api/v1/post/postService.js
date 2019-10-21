@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { Post, Comment } from '../../../db/models';
+import { PAGINATION_LIMIT } from '../../../constants';
 /* eslint-disable no-use-before-define */
 export default {
   create,
@@ -15,7 +16,7 @@ function create({ title = '', body = '', userId = null }) {
 }
 
 function getAll({ filter = '', page = 1, userId = null, order = 'ASC' }) {
-  const limit = process.env.LIMIT || 5;
+  const limit = PAGINATION_LIMIT;
   const offset = limit * (Number(page) - 1);
 
   const options = {
