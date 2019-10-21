@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import postController from './postController';
 import authenticateUser from '../../../middleware/authentication';
-import addUserId from './postMiddleware';
+import addUserId from '../../../middleware/addUserId';
 
 const {
   getOne,

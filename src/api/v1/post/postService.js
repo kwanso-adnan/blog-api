@@ -28,6 +28,7 @@ function getAll({ filter = '', page = 1, userId = null, order = 'ASC' }) {
     include: [
       {
         model: Comment
+        // as: 'comments',
       }
     ],
     orderBy: ['title', order],
@@ -44,8 +45,23 @@ function getById(id) {
   return Post.findByPk(id);
 }
 
-function remove(id) {
-  return Post.destroy({ where: { id } });
+async function remove(id, userId) {
+  return new Promise((resolve, reject) => {
+    Post.findOne({ where: { id } })
+      .then(post => {
+        if (!post) {
+          return reject(new Error('Not found'));
+        }
+        if (post && post.userId !== userId) {
+          return reject(new Error('Forbidden'));
+        }
+        const data = post.destroy();
+        resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      });
+  });
 }
 
 function update(id, { title = null, body = null }) {

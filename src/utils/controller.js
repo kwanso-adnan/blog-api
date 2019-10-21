@@ -24,8 +24,10 @@ function createOne(service) {
 function deleteOne(service) {
   return async function deleteRecord(req, resp, next) {
     const { id } = req.params;
+    const userId = req.user.id;
+
     try {
-      const countDeleted = await service.remove(id);
+      const countDeleted = await service.remove(id, userId);
       if (countDeleted === 0) {
         return resp.status(404).json({ error: 'Resource not found' });
       }

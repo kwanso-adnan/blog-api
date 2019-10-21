@@ -34,6 +34,7 @@ async function signin(req, resp, next) {
     const authenticated = await checkPassword(password, user.password);
 
     if (!authenticated) {
+      // Have to use the custom error class. But how???
       return resp.status(401).json({ error: 'Unauthorized' });
     }
 
