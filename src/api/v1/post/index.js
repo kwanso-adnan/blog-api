@@ -25,5 +25,5 @@ router
   .get(getOne)
   .patch([authenticateUser, addUserId, updateOne])
   .put([authenticateUser, addUserId, replaceOne])
-  .delete([authenticateUser, addUserId, deleteOne]);
+  .delete([authenticateUser, deleteOne]);
 export default router;

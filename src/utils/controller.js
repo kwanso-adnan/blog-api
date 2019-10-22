@@ -1,3 +1,6 @@
+import { ConnectionError } from 'sequelize';
+import { CustomError } from './error';
+
 /* eslint-disable no-use-before-define */
 export default function createController(service) {
   return {
@@ -67,11 +70,20 @@ function getAll(service) {
 function updateOne(service) {
   return async function updateRecord(req, resp, next) {
     const { id } = req.params;
+    const userId = req.user.id;
     try {
-      const updatedRecord = await service.update(id, req.body);
-      resp.status(201).json({ message: `${updatedRecord} record updated.` });
+      const { dataValues: updatedRecord } = await service.update(
+        id,
+        userId,
+        req.body
+      );
+      resp.status(201).json(updatedRecord);
     } catch (error) {
-      return next(error);
+      let customError;
+      if (error instanceof ConnectionError) {
+        customError = new CustomError(500, 'Server Error');
+      }
+      return next(customError);
     }
   };
 }
@@ -79,8 +91,13 @@ function updateOne(service) {
 function replaceOne(service) {
   return async function replaceRecord(req, resp, next) {
     const { id } = req.params;
+    const userId = req.user.id;
     try {
-      const replacedRecord = await service.replace(id, req.body);
+      const { dataValues: replacedRecord } = await service.replace(
+        id,
+        userId,
+        req.body
+      );
       resp.status(201).json(replacedRecord);
     } catch (error) {
       return next(error);

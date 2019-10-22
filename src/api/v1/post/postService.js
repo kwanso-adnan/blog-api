@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
-import { Post, Comment } from '../../../db/models';
+import { Post, Comment, Sequelize } from '../../../db/models';
 import { PAGINATION_LIMIT } from '../../../constants';
+import { CustomError } from '../../../utils/error';
 /* eslint-disable no-use-before-define */
 export default {
   create,
@@ -25,10 +26,17 @@ function getAll({ filter = '', page = 1, userId = null, order = 'ASC' }) {
         [Op.iLike]: `%${filter}%`
       }
     },
+
+    // How to debug, read the query from the terminal
+    // Self association in Comment and replies
     include: [
       {
-        model: Comment
-        // as: 'comments',
+        model: Comment,
+        as: 'comments'
+        // where: {
+        //   parentId: ,
+
+        // },
       }
     ],
     orderBy: ['title', order],
@@ -50,27 +58,58 @@ async function remove(id, userId) {
     Post.findOne({ where: { id } })
       .then(post => {
         if (!post) {
-          return reject(new Error('Not found'));
+          reject(new CustomError(404, 'Resource Not found.'));
         }
         if (post && post.userId !== userId) {
-          return reject(new Error('Forbidden'));
+          reject(new CustomError(403, 'Forbidden.'));
         }
         const data = post.destroy();
         resolve(data);
       })
       .catch(error => {
-        return reject(error);
+        reject(new CustomError(500, error.message));
+      });
+  });
+}
+async function update(id, userId, { title = null, body = null }) {
+  const updatedColumns = {};
+
+  if (title) updatedColumns.title = title;
+  if (body) updatedColumns.body = body;
+
+  return new Promise((resolve, reject) => {
+    Post.findOne({ where: { id } })
+      .then(post => {
+        if (!post) {
+          reject(new CustomError(404, 'Resource Not found.'));
+        }
+        if (post && post.userId !== userId) {
+          reject(new CustomError(403, 'Forbidden.'));
+        }
+        const data = post.update(updatedColumns);
+        resolve(data);
+      })
+      .catch(error => {
+        reject(new CustomError(500, error.message));
       });
   });
 }
 
-function update(id, { title = null, body = null }) {
-  const updatedColumns = {};
-  if (title) updatedColumns.title = title;
-  if (body) updatedColumns.body = body;
-  return Post.update(updatedColumns, { where: { id } });
-}
-
-function replace(id, { title = null, body = null }) {
-  return Post.update({ title, body }, { where: { id } });
+function replace(id, userId, { title = null, body = null }) {
+  return new Promise((resolve, reject) => {
+    Post.findOne({ where: { id } })
+      .then(post => {
+        if (!post) {
+          reject(new CustomError(404, 'Resource Not found.'));
+        }
+        if (post && post.userId !== userId) {
+          reject(new CustomError(403, 'Forbidden.'));
+        }
+        const data = post.update({ title, body });
+        resolve(data);
+      })
+      .catch(error => {
+        reject(new CustomError(500, error.message));
+      });
+  });
 }

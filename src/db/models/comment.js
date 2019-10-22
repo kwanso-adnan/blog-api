@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
+
   Comment.associate = function(models) {
     // associations can be defined here
     Comment.belongsTo(models.Post, {
@@ -22,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
     });
     Comment.belongsTo(models.User, {
       foreignKey: 'userId',
+      foreignKeyConstraint: true
+    });
+    Comment.hasMany(Comment, {
+      as: 'replies',
+      foreignKey: 'parentId',
       foreignKeyConstraint: true
     });
   };

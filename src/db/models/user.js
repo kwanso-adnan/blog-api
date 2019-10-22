@@ -1,3 +1,5 @@
+import { CustomError } from '../../utils/error';
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
@@ -7,18 +9,14 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         allowNull: false,
         unique: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        validate: {
+          isEmail: true
+        }
       },
       password: {
         allowNull: false,
-        type: DataTypes.STRING,
-        validate: {
-          is: {
-            args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/,
-            msg:
-              'The password must contain atleast 8 characters including at least 1 uppercase, 1 lowercase and one digit.'
-          }
-        }
+        type: DataTypes.STRING
       }
     },
     {}

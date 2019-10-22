@@ -2,7 +2,7 @@ import express from 'express';
 import { json, urlencoded } from 'body-parser';
 import morgan from 'morgan';
 import api from './api';
-import errorMiddlware from './middleware/errorMiddleware';
+import errorMiddlware from './middleware/errorMiddleware'; // Folder goes into the api
 
 const PORT = process.env.PORT || 4000;
 const app = express();

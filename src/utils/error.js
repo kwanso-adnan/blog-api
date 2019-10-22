@@ -7,10 +7,17 @@ export class CustomError extends Error {
 }
 
 export function handleError(err, res) {
-  const { statusCode, message } = err;
+  // get all the errors here, check the type or return custom
+  // error where it happens?
+  // 4, 5 error classes
+
+  let { statusCode } = err;
+  if (!statusCode) {
+    statusCode = 500;
+  }
   res.status(statusCode).json({
-    status: 'error',
+    status: 'Error',
     statusCode,
-    message
+    message: err.message
   });
 }

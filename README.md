@@ -1,0 +1,6 @@
+- Request Response Cycle
+- Code Organization
+- Sequelize Hooks
+- Self Association of comments and replies
+- Virtual fields
+- Git & Git Checkout .

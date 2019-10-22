@@ -1,4 +1,5 @@
 import { Comment } from '../../../db/models';
+import { CustomError } from '../../../utils/error';
 
 /* eslint-disable no-use-before-define */
 export default {
@@ -15,16 +16,16 @@ function remove(id, userId) {
     Comment.findOne({ where: { id } })
       .then(comment => {
         if (!comment) {
-          return reject(new Error('Record not found'));
+          return reject(new CustomError(404, 'Record not found.'));
         }
         if (comment && comment.userId !== userId) {
-          return reject(new Error('Forbidden'));
+          return reject(new CustomError(403, 'Forbidden!'));
         }
         const data = comment.destroy();
         resolve(data);
       })
       .catch(error => {
-        return reject(error);
+        reject(new CustomError(500, error.message));
       });
   });
 }
