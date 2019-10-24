@@ -1,6 +1,6 @@
 // @ts-check
 import auth from '../utils/auth';
-import userService from '../api/v1/user/userService';
+import userService from '../api/v1/services/userService';
 import { CustomError } from '../utils/error';
 
 const { verifyToken } = auth;

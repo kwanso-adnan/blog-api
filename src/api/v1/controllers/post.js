@@ -1,4 +1,4 @@
-import postService from './postService';
+import postService from '../services/postService';
 import createController from '../../../utils/controller';
 
 const postController = createController(postService);

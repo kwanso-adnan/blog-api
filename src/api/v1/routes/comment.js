@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import commentController from './commentController';
+import commentController from '../controllers/comment';
 import authenticateUser from '../../../middleware/authentication';
 import addUserId from '../../../middleware/addUserId';
 

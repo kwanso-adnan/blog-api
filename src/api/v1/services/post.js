@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { Post, Comment, Sequelize } from '../../../db/models';
+import { Post, Comment } from '../../../db/models';
 import { PAGINATION_LIMIT } from '../../../constants';
 import { CustomError } from '../../../utils/error';
 /* eslint-disable no-use-before-define */

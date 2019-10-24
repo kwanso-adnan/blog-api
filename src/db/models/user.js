@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { CustomError } from '../../utils/error';
 
 module.exports = (sequelize, DataTypes) => {
@@ -14,9 +15,30 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true
         }
       },
+      passwordHash: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
+      },
       password: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.VIRTUAL,
+        async set(password) {
+          const valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,30}$/.test(
+            password
+          );
+          if (!valid) {
+            throw new CustomError(400, 'Password not valid');
+          }
+          try {
+            const hash = await bcrypt.hash(password, 12);
+            this.setDataValue('passwordHash', hash);
+          } catch (error) {
+            throw new CustomError(500, 'Sorry, we\'re facing some issues.');
+          }
+        }
       }
     },
     {}
@@ -31,10 +53,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKeyConstraint: true
     });
   };
+  User.prototype.authenticate = async function(password) {
+    const hash = this.getDataValue('passwordHash');
+    try {
+      const authenticated = bcrypt.compare(password, hash);
+      if (!authenticated) throw new CustomError(401, 'Unauthorized');
+    } catch (error) {
+      throw new Error(500, error.message);
+    }
+  };
   return User;
 };
-
-// Check the syntax to make the columns unique
-// Password Strength validation 8, uppercase, lowecase special characters.
-// DataType of password field virtual and actual field
-// Both are defined in the Model.

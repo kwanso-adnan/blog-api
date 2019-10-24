@@ -1,6 +1,6 @@
 import { checkPassword, hashPassword } from '../../../utils/bcrypt';
 import auth from '../../../utils/auth';
-import userService from '../user/userService';
+import userService from '../services/userService';
 import { CustomError } from '../../../utils/error';
 
 const { newToken } = auth;

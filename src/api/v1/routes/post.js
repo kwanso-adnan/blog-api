@@ -1,6 +1,6 @@
 // @ts-check
 import { Router } from 'express';
-import postController from './postController';
+import postController from '../controllers/post';
 import authenticateUser from '../../../middleware/authentication';
 import addUserId from '../../../middleware/addUserId';
 

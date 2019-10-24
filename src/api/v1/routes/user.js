@@ -1,10 +1,9 @@
 // @ts-check
 import { Router } from 'express';
-import userController from './userController';
 import authenticateUser from '../../../middleware/authentication';
-import addUserId from './userMiddleware';
+import addUserId from '../middleware/userMiddleware';
+import userController from '../controllers/user';
 
-// Check the difference between the implementation of put and patch.
 const { getMe, updateMe, replaceMe } = userController;
 
 const router = Router();

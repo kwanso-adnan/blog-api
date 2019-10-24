@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import authController from './authController';
-import isPasswordValid from './authMiddleware';
+import authController from '../controllers/authController';
 
 const { signin, signup } = authController;
 
 const router = Router();
 
 router.post('/signin', signin);
-router.post('/signup', [isPasswordValid, signup]);
+router.post('/signup', signup);
 
 export default router;
