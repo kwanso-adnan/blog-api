@@ -1,8 +1,9 @@
 // @ts-check
 import auth from '../utils/auth';
-import userService from '../api/v1/services/userService';
-import { CustomError } from '../utils/error';
+import userService from '../api/v1/services/user';
+import errors from '../utils/errors';
 
+const { unAuthorized } = errors;
 const { verifyToken } = auth;
 const { getById } = userService;
 
@@ -10,7 +11,7 @@ export default async function authenticateUser(req, resp, next) {
   const bearer = req.headers.authorization;
 
   if (!bearer || !bearer.startsWith('Bearer ')) {
-    throw new CustomError(401, 'Unauthorized!');
+    next(unAuthorized('Invalid token.'));
   }
 
   const token = bearer.split(' ')[1];
@@ -19,12 +20,11 @@ export default async function authenticateUser(req, resp, next) {
   try {
     payload = await verifyToken(token);
   } catch (error) {
-    throw new CustomError(401, 'Unauthorized!');
+    next(unAuthorized(error.message));
   }
 
-  // Double level db exception?
   const user = await getById(payload.id).catch(error => {
-    return resp.status(401).json({ error: { message: 'Unauthorized!' } });
+    next(error);
   });
   req.user = user;
   next();

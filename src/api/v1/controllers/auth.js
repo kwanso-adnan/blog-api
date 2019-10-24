@@ -1,8 +1,9 @@
-import { checkPassword, hashPassword } from '../../../utils/bcrypt';
+import { ValidationError } from 'sequelize';
 import auth from '../../../utils/auth';
-import userService from '../services/userService';
-import { CustomError } from '../../../utils/error';
+import userService from '../services/user';
+import errors from '../../../utils/errors';
 
+const { notFound, unAuthorized, forbidden, serverError } = errors;
 const { newToken } = auth;
 const { create, getByEmail } = userService;
 
@@ -12,34 +13,36 @@ export default {
   signin
 };
 
-// Sequelize hooks, move validations to sequelize hooks
 async function signup(req, resp, next) {
-  const { password } = req.body;
-
+  const { user } = req.body;
   try {
-    const passwordHash = await hashPassword(password);
-    req.body.password = passwordHash;
-    const newUser = await create(req.body);
+    const newUser = await create(user);
     const token = newToken({ id: newUser.id });
     return resp.status(201).json({ token });
   } catch (error) {
-    next(error);
+    if (error instanceof ValidationError) {
+      const { message } = error.errors[0];
+      next(forbidden(message));
+    }
+    next(serverError('Something went wrong'));
   }
 }
 
 async function signin(req, resp, next) {
-  const { email, password } = req.body;
+  const {
+    user: { email, password }
+  } = req.body;
   try {
     const user = await getByEmail(email);
     if (!user) {
-      throw new CustomError(404, 'User not found!');
+      next(notFound('User not found.'));
     }
-    const authenticated = await checkPassword(password, user.password);
+    const authenticated = await user.authenticate(password);
     if (!authenticated) {
-      throw new CustomError(401, 'Unauthorized');
+      next(unAuthorized('Invalid email or password!'));
     }
     const token = newToken({ id: user.id });
-    return resp.status(200).json({ token });
+    resp.status(200).json({ token });
   } catch (error) {
     return next(error);
   }

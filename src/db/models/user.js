@@ -1,5 +1,8 @@
 import bcrypt from 'bcrypt';
-import { CustomError } from '../../utils/error';
+import CustomError from '../../utils/CustomError';
+import errors from '../../utils/errors';
+
+const { badRequest, serverError } = errors;
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
@@ -30,19 +33,29 @@ module.exports = (sequelize, DataTypes) => {
             password
           );
           if (!valid) {
-            throw new CustomError(400, 'Password not valid');
+            throw new CustomError(badRequest('Password is invalid'));
           }
-          try {
-            const hash = await bcrypt.hash(password, 12);
-            this.setDataValue('passwordHash', hash);
-          } catch (error) {
-            throw new CustomError(500, 'Sorry, we\'re facing some issues.');
-          }
+          this.setDataValue('password', password);
         }
       }
     },
-    {}
+    {
+      hooks: {
+        beforeValidate: function hashPassword(user, options) {
+          console.log('Pssword is ', user.password);
+          return bcrypt
+            .hash(user.password, 12)
+            .then(hash => {
+              user.passwordHash = hash;
+            })
+            .catch(error => {
+              throw CustomError(serverError(error.message));
+            });
+        }
+      }
+    }
   );
+
   User.associate = function(models) {
     User.hasMany(models.Post, {
       foreignKeyConstraint: true,
@@ -53,14 +66,15 @@ module.exports = (sequelize, DataTypes) => {
       foreignKeyConstraint: true
     });
   };
-  User.prototype.authenticate = async function(password) {
+  User.prototype.authenticate = async function checkPassword(password) {
     const hash = this.getDataValue('passwordHash');
+    let authenticated = false;
     try {
-      const authenticated = bcrypt.compare(password, hash);
-      if (!authenticated) throw new CustomError(401, 'Unauthorized');
+      authenticated = await bcrypt.compare(password, hash);
     } catch (error) {
-      throw new Error(500, error.message);
+      throw new Error(serverError('Decryption error.'));
     }
+    return authenticated;
   };
   return User;
 };

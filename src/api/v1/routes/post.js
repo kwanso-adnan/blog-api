@@ -5,25 +5,25 @@ import authenticateUser from '../../../middleware/authentication';
 import addUserId from '../../../middleware/addUserId';
 
 const {
-  getOne,
-  getAll,
-  updateOne,
-  replaceOne,
-  createOne,
-  deleteOne
+  createPost,
+  updatePost,
+  deletePost,
+  getPostById,
+  getAllPosts,
+  replacePost
 } = postController;
 
 const router = Router();
 
 router
   .route('/')
-  .get(getAll)
-  .post([authenticateUser, addUserId, createOne]);
+  .get(getAllPosts)
+  .post([authenticateUser, addUserId, createPost]);
 
 router
   .route('/:id')
-  .get(getOne)
-  .patch([authenticateUser, addUserId, updateOne])
-  .put([authenticateUser, addUserId, replaceOne])
-  .delete([authenticateUser, deleteOne]);
+  .get(getPostById)
+  .patch([authenticateUser, addUserId, updatePost])
+  .put([authenticateUser, addUserId, replacePost])
+  .delete([authenticateUser, deletePost]);
 export default router;

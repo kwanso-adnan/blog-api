@@ -1,5 +1,7 @@
 import { ConnectionError } from 'sequelize';
-import { CustomError } from './error';
+import errors from '../../../utils/errors';
+
+const { serverError } = errors;
 
 /* eslint-disable no-use-before-define */
 export default function createController(service) {
@@ -81,9 +83,10 @@ function updateOne(service) {
     } catch (error) {
       let customError;
       if (error instanceof ConnectionError) {
-        customError = new CustomError(500, 'Server Error');
+        const { message } = error.errors[0];
+        customError = serverError(message);
       }
-      return next(customError);
+      next(customError);
     }
   };
 }

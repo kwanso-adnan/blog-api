@@ -1,5 +1,5 @@
 import { Comment } from '../../../db/models';
-import { CustomError } from '../../../utils/error';
+import { CustomError } from '../../../utils/errors';
 
 /* eslint-disable no-use-before-define */
 export default {

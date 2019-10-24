@@ -9,13 +9,7 @@ export default {
   getByEmail
 };
 
-// Model => Service => Controller
-async function create({
-  firstName = '',
-  lastName = '',
-  email = '',
-  password = ''
-}) {
+function create({ firstName, lastName, email, password }) {
   return User.create({ firstName, lastName, email, password });
 }
 

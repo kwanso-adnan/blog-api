@@ -1,7 +1,11 @@
 import { Op } from 'sequelize';
 import { Post, Comment } from '../../../db/models';
 import { PAGINATION_LIMIT } from '../../../constants';
-import { CustomError } from '../../../utils/error';
+import CustomError from '../../../utils/CustomError';
+import errors from '../../../utils/errors';
+
+const { notFound, forbidden } = errors;
+
 /* eslint-disable no-use-before-define */
 export default {
   create,
@@ -27,7 +31,6 @@ function getAll({ filter = '', page = 1, userId = null, order = 'ASC' }) {
       }
     },
 
-    // How to debug, read the query from the terminal
     // Self association in Comment and replies
     include: [
       {
@@ -58,19 +61,20 @@ async function remove(id, userId) {
     Post.findOne({ where: { id } })
       .then(post => {
         if (!post) {
-          reject(new CustomError(404, 'Resource Not found.'));
+          reject(new CustomError(notFound('Post with given Id not found.')));
         }
         if (post && post.userId !== userId) {
-          reject(new CustomError(403, 'Forbidden.'));
+          reject(new CustomError(forbidden('Forbidden.')));
         }
         const data = post.destroy();
         resolve(data);
       })
       .catch(error => {
-        reject(new CustomError(500, error.message));
+        reject(error);
       });
   });
 }
+
 async function update(id, userId, { title = null, body = null }) {
   const updatedColumns = {};
 
@@ -81,16 +85,16 @@ async function update(id, userId, { title = null, body = null }) {
     Post.findOne({ where: { id } })
       .then(post => {
         if (!post) {
-          reject(new CustomError(404, 'Resource Not found.'));
+          reject(new CustomError(notFound('Post with given id not found.')));
         }
         if (post && post.userId !== userId) {
-          reject(new CustomError(403, 'Forbidden.'));
+          reject(new CustomError(forbidden('Forbidden.')));
         }
         const data = post.update(updatedColumns);
         resolve(data);
       })
       .catch(error => {
-        reject(new CustomError(500, error.message));
+        reject(error);
       });
   });
 }
@@ -100,16 +104,16 @@ function replace(id, userId, { title = null, body = null }) {
     Post.findOne({ where: { id } })
       .then(post => {
         if (!post) {
-          reject(new CustomError(404, 'Resource Not found.'));
+          reject(new CustomError(notFound('Post with given Id not found.')));
         }
         if (post && post.userId !== userId) {
-          reject(new CustomError(403, 'Forbidden.'));
+          reject(new CustomError(forbidden('Forbidden')));
         }
         const data = post.update({ title, body });
         resolve(data);
       })
       .catch(error => {
-        reject(new CustomError(500, error.message));
+        reject(error);
       });
   });
 }

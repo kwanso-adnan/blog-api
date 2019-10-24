@@ -1,5 +1,5 @@
-import createController from '../../../utils/controller';
-import userService from '../services/userService';
+import userService from '../services/user';
+import createController from '../helpers/controller';
 
 const userController = createController(userService);
 const { getOne, updateOne, replaceOne } = userController;
